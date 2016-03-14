@@ -15,6 +15,9 @@ struct Cell {
 }
 
 
+impl Copy for Cell {}
+impl Clone for Cell { fn clone(&self) -> Cell {*self}}
+
 
 fn main() {
 	
@@ -26,8 +29,10 @@ fn main() {
 	
     let mut grid1 :Cell;
 
-    // The following line complains that a copy implementation is
-    // available for Cell.
+    
+    // define a 100 cell array but it uses the Copy and Clone
+    // implementation. It is initialised with the value of 0x01 and 0x01
+    // for both visited and carve.
     let mut grid2 : [Cell; 100] = [ Cell{visited:0x01, carve:0x01}; 100 ];
 
 
@@ -41,6 +46,9 @@ fn main() {
     grid[0].visited = 0x01;
     grid[0].carve = 0x01;
 
+    grid2[0].visited = 0x01;
+    grid2[0].carve = 0x01;
+    
     grid1.visited = 0x01;
     grid1.carve = 0x01;
     
