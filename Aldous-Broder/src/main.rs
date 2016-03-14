@@ -21,6 +21,18 @@ struct Cell {
 impl Copy for Cell {}
 impl Clone for Cell { fn clone(&self) -> Cell {*self}}
 
+fn calculate_vector_position(x :i32, y: i32, size: usize)->i32 {
+	
+	let ret_value:i32;
+	let i32_size:i32;
+	
+	i32_size = size as i32;
+	
+	ret_value = (x * i32_size) + y;
+	
+	return ret_value;
+}
+
 
 fn main() {
 	
@@ -65,13 +77,29 @@ fn main() {
     println!("x is {}", x);
     println!("y is {}", y);
 
-	let xs = vec![Cell{visited:0x01, carve:0x01}; 5];
+	let mut vec_pos : usize;
+	
+	let mut xs = vec![Cell{visited:0x01, carve:0x01}; (GRID_SIZE)];
 	
 	// The `len` method yields the current size of the vector
     println!("Vector size: {}", xs.len());
 
     // Indexing is done using the square brackets (indexing starts at 0)
     println!("Second element: {}", xs[1].visited);
+
+	xs[1].visited = 2;
+
+	vec_pos = calculate_vector_position(0, 1, GRID_SIZE) as usize;
+	xs[vec_pos].carve = 3;
+
+   // Indexing is done using the square brackets (indexing starts at 0)
+    println!("Second element: {}", xs[1].visited);
+   	println!("Second element: {}", xs[1].carve);
+
+	vec_pos = calculate_vector_position(0, 3, GRID_SIZE) as usize;
+	xs[vec_pos].carve = 3;
+
+
 
     // `pop` removes the last element from the vector and returns it
     let popped_cell : Cell = Cell{visited:0x01, carve:0x01};
@@ -81,5 +109,7 @@ fn main() {
 
     // Out of bounds indexing yields a panic
     println!("Fourth element: {}", xs[3].visited);
+    
+    
 
 }
