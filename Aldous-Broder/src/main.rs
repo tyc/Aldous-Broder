@@ -24,7 +24,7 @@ impl Clone for Cell { fn clone(&self) -> Cell {*self}}
 
 fn main() {
 	
-	let grid_size :i32 = 10;
+	const GRID_SIZE :usize = 10;
     
     let mut grid : [Cell; 2] = 
         [
@@ -34,13 +34,13 @@ fn main() {
 	
     let mut grid1 :Cell;
 
-    let mut num_grid :[i32; grid_size] = [ 0; grid_size];
+    // let mut num_grid :[i32; GRID_SIZE] = [ 0; GRID_SIZE];
 
     
     // define a 100 cell array but it uses the Copy and Clone
     // implementation. It is initialised with the value of 0x01 and 0x01
     // for both visited and carve.
-    let mut grid2 : [Cell; 10] = [ Cell{visited:0x01, carve:0x01}; 10 ];
+    let mut grid2 : [Cell; GRID_SIZE] = [ Cell{visited:0x01, carve:0x01}; GRID_SIZE ];
 
 
 //	let secret_number = rand::thread_rng().gen_range(1,101);
@@ -64,4 +64,22 @@ fn main() {
     
     println!("x is {}", x);
     println!("y is {}", y);
+
+	let xs = vec![Cell{visited:0x01, carve:0x01}; 5];
+	
+	// The `len` method yields the current size of the vector
+    println!("Vector size: {}", xs.len());
+
+    // Indexing is done using the square brackets (indexing starts at 0)
+    println!("Second element: {}", xs[1].visited);
+
+    // `pop` removes the last element from the vector and returns it
+    let popped_cell : Cell = Cell{visited:0x01, carve:0x01};
+    
+    // popped_cell = xs.pop();
+    println!("Pop last element: {:?}", popped_cell.visited);
+
+    // Out of bounds indexing yields a panic
+    println!("Fourth element: {}", xs[3].visited);
+
 }
