@@ -24,92 +24,87 @@ impl Clone for Cell { fn clone(&self) -> Cell {*self}}
 fn calculate_vector_position(x :i32, y: i32, size: usize)->i32 {
 	
 	let ret_value:i32;
-	let i32_size:i32;
 	
-	i32_size = size as i32;
-	
-	ret_value = (x * i32_size) + y;
+	ret_value = (x * size as i32) + y;
 	
 	return ret_value;
 }
 
 
 fn main() {
-	
-	const GRID_SIZE :usize = 10;
-    
-    let mut grid : [Cell; 2] = 
-        [
-            Cell{visited:0x01, carve:0x01},
-            Cell{visited:0x01, carve:0x01},
-         ];
-	
-    let mut grid1 :Cell;
 
-    // let mut num_grid :[i32; GRID_SIZE] = [ 0; GRID_SIZE];
+    // define some constants that determine the size of the grid
+    const WIDTH : i32 = 5;
+    const HEIGHT : i32 = 5;
 
-    
-    // define a 100 cell array but it uses the Copy and Clone
-    // implementation. It is initialised with the value of 0x01 and 0x01
-    // for both visited and carve.
-    let mut grid2 : [Cell; GRID_SIZE] = [ Cell{visited:0x01, carve:0x01}; GRID_SIZE ];
-
-
-//	let secret_number = rand::thread_rng().gen_range(1,101);
-//		
-//	println!("The secret number is : {}", secret_number);
-
-    let width = 10;
-    let height = 10;
+	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
    
-    grid[0].visited = 0x01;
-    grid[0].carve = 0x01;
-
-    grid2[0].visited = 0x01;
-    grid2[0].carve = 0x01;
     
-    grid1.visited = 0x01;
-    grid1.carve = 0x01;
-    
-    let x = rand::thread_rng().gen_range(1,width);
-    let y = rand::thread_rng().gen_range(1,height);
-    
-    println!("x is {}", x);
-    println!("y is {}", y);
+    let mut cell_remaining : i32 = (GRID_SIZE as i32) - 1;
 
 	let mut vec_pos : usize;
 	
-	let mut xs = vec![Cell{visited:0x01, carve:0x01}; (GRID_SIZE)];
+	let mut cell = vec![Cell{visited:0x00, carve:0x00}; (GRID_SIZE)];
 	
-	// The `len` method yields the current size of the vector
-    println!("Vector size: {}", xs.len());
+    // setup up the first cell via  random selection.
+    //
+    let mut x_pos = rand::thread_rng().gen_range(1,WIDTH);
+    let mut y_pos = rand::thread_rng().gen_range(1,HEIGHT);
 
-    // Indexing is done using the square brackets (indexing starts at 0)
-    println!("Second element: {}", xs[1].visited);
+    println!("starting position {} {}", x_pos, y_pos);
 
-	xs[1].visited = 2;
-
-	vec_pos = calculate_vector_position(0, 1, GRID_SIZE) as usize;
-	xs[vec_pos].carve = 3;
-
-   // Indexing is done using the square brackets (indexing starts at 0)
-    println!("Second element: {}", xs[1].visited);
-   	println!("Second element: {}", xs[1].carve);
-
-	vec_pos = calculate_vector_position(0, 3, GRID_SIZE) as usize;
-	xs[vec_pos].carve = 3;
-
-
-
-    // `pop` removes the last element from the vector and returns it
-    let popped_cell : Cell = Cell{visited:0x01, carve:0x01};
-    
-    // popped_cell = xs.pop();
-    println!("Pop last element: {:?}", popped_cell.visited);
-
-    // Out of bounds indexing yields a panic
-    println!("Fourth element: {}", xs[3].visited);
+	vec_pos = calculate_vector_position(x_pos, y_pos, GRID_SIZE) as usize;
+   
+    // cell[vec_pos].visited = 0x01;    
     
     
+    while cell_remaining > 0 {
 
+        // get the next step to take.
+        let direction_shuffle = rand::thread_rng().gen_range(1,4);
+
+        println!("direciton_shuffle {}", direction_shuffle);
+
+        match direction_shuffle {
+
+            // direction is NORTH
+            1 => {
+                if (y_pos < HEIGHT) {
+                    y_pos += 1;    
+                    println!("direction is North, position {} {}", x_pos, y_pos);
+                }
+            },
+
+            // direction is EAST
+            2 => {
+                if (x_pos < WIDTH) {
+                    x_pos += 1;    
+                    println!("direction is East, position {} {}", x_pos, y_pos);
+                }
+            },
+
+            // direction is South
+            3 => {
+                if (y_pos > 0) {
+                    y_pos -= 1;    
+                    println!("direction is South, position {} {}", x_pos, y_pos);
+                }
+            }
+
+            // direction is West
+            4 => {
+                if (x_pos > 0) {
+                    x_pos -= 1;    
+                    println!("direction is West, position {} {}", x_pos, y_pos);
+                }
+            }
+
+            _ => println!("anything else!"),
+        }
+
+        println!("cell remaining = {}", cell_remaining);
+        cell_remaining -= 1;
+    
+    }
 }
+
