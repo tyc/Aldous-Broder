@@ -17,16 +17,17 @@ struct Cell {
 }
 
 
-
 impl Copy for Cell {}
 impl Clone for Cell { fn clone(&self) -> Cell {*self}}
 
-fn calculate_vector_position(x :i32, y: i32, size: usize)->i32 {
+fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
 	
 	let ret_value:i32;
 	
-	ret_value = (x * size as i32) + y;
-	
+	ret_value = (x * width) + y;
+
+    println!("calculated vector position = {}", ret_value);
+
 	return ret_value;
 }
 
@@ -38,7 +39,6 @@ fn main() {
     const HEIGHT : i32 = 5;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
-   
     
     let mut cell_remaining : i32 = (GRID_SIZE as i32) - 1;
 
@@ -48,20 +48,20 @@ fn main() {
 	
     // setup up the first cell via  random selection.
     //
-    let mut x_pos = rand::thread_rng().gen_range(1,WIDTH);
-    let mut y_pos = rand::thread_rng().gen_range(1,HEIGHT);
+    let mut x_pos = rand::thread_rng().gen_range(0,WIDTH-1);
+    let mut y_pos = rand::thread_rng().gen_range(0,HEIGHT-1);
 
     println!("starting position {} {}", x_pos, y_pos);
 
-	vec_pos = calculate_vector_position(x_pos, y_pos, GRID_SIZE) as usize;
+	vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
    
-    // cell[vec_pos].visited = 0x01;    
+    cell[vec_pos].visited = 0x01;    
     
     
-    while cell_remaining > 0 {
+    while cell_remaining != 0 {
 
         // get the next step to take.
-        let direction_shuffle = rand::thread_rng().gen_range(1,4);
+        let direction_shuffle = rand::thread_rng().gen_range(1,5);
 
         println!("direciton_shuffle {}", direction_shuffle);
 
@@ -69,7 +69,7 @@ fn main() {
 
             // direction is NORTH
             1 => {
-                if (y_pos < HEIGHT) {
+                if y_pos < HEIGHT-1 {
                     y_pos += 1;    
                     println!("direction is North, position {} {}", x_pos, y_pos);
                 }
@@ -77,7 +77,7 @@ fn main() {
 
             // direction is EAST
             2 => {
-                if (x_pos < WIDTH) {
+                if x_pos < WIDTH-1 {
                     x_pos += 1;    
                     println!("direction is East, position {} {}", x_pos, y_pos);
                 }
@@ -85,7 +85,7 @@ fn main() {
 
             // direction is South
             3 => {
-                if (y_pos > 0) {
+                if y_pos > 0 {
                     y_pos -= 1;    
                     println!("direction is South, position {} {}", x_pos, y_pos);
                 }
@@ -93,7 +93,7 @@ fn main() {
 
             // direction is West
             4 => {
-                if (x_pos > 0) {
+                if x_pos > 0 {
                     x_pos -= 1;    
                     println!("direction is West, position {} {}", x_pos, y_pos);
                 }
@@ -102,9 +102,20 @@ fn main() {
             _ => println!("anything else!"),
         }
 
-        println!("cell remaining = {}", cell_remaining);
-        cell_remaining -= 1;
-    
+        vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+        
+
+        if cell[vec_pos].visited != 0x01 {
+
+            cell[vec_pos].visited = 0x01;
+            
+            println!("cell remaining = {}", cell_remaining);
+            cell_remaining -= 1;
+        }
+    }
+
+    for x in 0..GRID_SIZE {
+        println!("cell[{}] = {}", x, cell[x].visited);
     }
 }
 
