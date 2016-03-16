@@ -9,6 +9,17 @@ use rand::Rng;
 // http://weblog.jamisbuck.org/2011/1/17/maze-generation-aldous-broder-algorithm
 //
 
+const NORTH : u8 = (1<<3);
+const SOUTH : u8 = (1<<2);
+const EAST  : u8 = (1<<1);
+const WEST  : u8 = (1<<0);
+
+
+const NORTH_CARVE : u8 = !NORTH;
+const SOUTH_CARVE : u8 = !SOUTH;
+const EAST_CARVE  : u8 = !EAST;
+const WEST_CARVE  : u8 = !WEST;
+
 struct Cell {
 	visited: u8,  // 0x01 = visited
 
@@ -47,7 +58,7 @@ fn dump_grid(width : i32, height : i32, cell : Vec<Cell>) {
             vec_pos = calculate_vector_position(x_pos, y_pos, width) as usize;
 
             // check the south wall
-            if (cell[vec_pos].carve & 0x04) != 0 {
+            if (cell[vec_pos].carve & SOUTH) != 0 {
                 print!("_");
             }
             else
@@ -56,7 +67,7 @@ fn dump_grid(width : i32, height : i32, cell : Vec<Cell>) {
             }
 
             // check the east wall
-            if (cell[vec_pos].carve & 0x02) != 0 {
+            if (cell[vec_pos].carve & EAST) != 0 {
                 print!("|");
             }
             else
@@ -70,11 +81,12 @@ fn dump_grid(width : i32, height : i32, cell : Vec<Cell>) {
 }
 
 
+
 fn main() {
 
     // define some constants that determine the size of the grid
-    const WIDTH : i32 = 3;
-    const HEIGHT : i32 = 2;
+    const WIDTH : i32 = 10;
+    const HEIGHT : i32 = 20;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
     
@@ -95,20 +107,32 @@ fn main() {
    
     cell[vec_pos].visited = 0x01;    
     
-    
     while cell_remaining != 0 {
 
         // get the next step to take.
         let direction_shuffle = rand::thread_rng().gen_range(1,5);
+        let mut last_pos : i32 = 0x00;
 
 //        println!("direciton_shuffle {}", direction_shuffle);
 
+    // bitfields 0b0000NSEW.
         match direction_shuffle {
 
             // direction is NORTH
             1 => {
                 if y_pos < HEIGHT-1 {
+                    
                     y_pos += 1;    
+                    
+/*                    // carve the current cell
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+                    cell[vec_pos] &= 0xFE; 
+                    
+                    
+                    // carve the new cell
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+                    cell[vec_pos] &= 0xFE; 
+  */                  
                     println!("direction is North, position {} {}", x_pos, y_pos);
                 }
             },
@@ -143,10 +167,10 @@ fn main() {
         vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
         
 
+        // if the cell has not been visited, we mark it as 
+        // visited and adjust the carve attribute.
         if cell[vec_pos].visited != 0x01 {
 
-            cell[vec_pos].visited = 0x01;
-            
 //            println!("cell remaining = {}", cell_remaining);
             cell_remaining -= 1;
         }
