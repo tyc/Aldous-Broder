@@ -12,8 +12,9 @@ use rand::Rng;
 struct Cell {
 	visited: u8,  // 0x01 = visited
 
-    // bitfields 0b0000NSEW
-	carve: u8,    
+    // bitfields 0b0000NSEW.
+    // Indicates which of its wall is missing.
+	carve: u8,
 }
 
 
@@ -26,17 +27,54 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
 	
 	ret_value = (x * width) + y;
 
-    println!("calculated vector position = {}", ret_value);
+    // println!("calculated vector position = {}", ret_value);
 
 	return ret_value;
+}
+
+fn dump_grid(width : i32, height : i32, cell : Vec<Cell>) {
+
+    let mut vec_pos : usize = 0;
+
+    for x_pos in 0..width {
+        print!(" _");
+    }
+    println!("");
+
+    for y_pos in 0..height {
+        print!("|");
+        for x_pos in 0..width {
+            vec_pos = calculate_vector_position(x_pos, y_pos, width) as usize;
+
+            // check the south wall
+            if (cell[vec_pos].carve & 0x04) != 0 {
+                print!("_");
+            }
+            else
+            {
+                print!(" ");
+            }
+
+            // check the east wall
+            if (cell[vec_pos].carve & 0x02) != 0 {
+                print!("|");
+            }
+            else
+            {
+                print!(" ");
+            }
+        }
+        println!("");
+    }
+    
 }
 
 
 fn main() {
 
     // define some constants that determine the size of the grid
-    const WIDTH : i32 = 5;
-    const HEIGHT : i32 = 5;
+    const WIDTH : i32 = 10;
+    const HEIGHT : i32 =10;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
     
@@ -44,7 +82,7 @@ fn main() {
 
 	let mut vec_pos : usize;
 	
-	let mut cell = vec![Cell{visited:0x00, carve:0x00}; (GRID_SIZE)];
+	let mut cell = vec![Cell{visited:0x00, carve:(0x02|0x04)}; (GRID_SIZE)];
 	
     // setup up the first cell via  random selection.
     //
@@ -63,7 +101,7 @@ fn main() {
         // get the next step to take.
         let direction_shuffle = rand::thread_rng().gen_range(1,5);
 
-        println!("direciton_shuffle {}", direction_shuffle);
+//        println!("direciton_shuffle {}", direction_shuffle);
 
         match direction_shuffle {
 
@@ -71,7 +109,7 @@ fn main() {
             1 => {
                 if y_pos < HEIGHT-1 {
                     y_pos += 1;    
-                    println!("direction is North, position {} {}", x_pos, y_pos);
+//                    println!("direction is North, position {} {}", x_pos, y_pos);
                 }
             },
 
@@ -79,7 +117,7 @@ fn main() {
             2 => {
                 if x_pos < WIDTH-1 {
                     x_pos += 1;    
-                    println!("direction is East, position {} {}", x_pos, y_pos);
+ //                   println!("direction is East, position {} {}", x_pos, y_pos);
                 }
             },
 
@@ -87,7 +125,7 @@ fn main() {
             3 => {
                 if y_pos > 0 {
                     y_pos -= 1;    
-                    println!("direction is South, position {} {}", x_pos, y_pos);
+  //                  println!("direction is South, position {} {}", x_pos, y_pos);
                 }
             }
 
@@ -95,11 +133,11 @@ fn main() {
             4 => {
                 if x_pos > 0 {
                     x_pos -= 1;    
-                    println!("direction is West, position {} {}", x_pos, y_pos);
+   //                 println!("direction is West, position {} {}", x_pos, y_pos);
                 }
             }
 
-            _ => println!("anything else!"),
+            _ => {},
         }
 
         vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
@@ -109,13 +147,12 @@ fn main() {
 
             cell[vec_pos].visited = 0x01;
             
-            println!("cell remaining = {}", cell_remaining);
+//            println!("cell remaining = {}", cell_remaining);
             cell_remaining -= 1;
         }
     }
 
-    for x in 0..GRID_SIZE {
-        println!("cell[{}] = {}", x, cell[x].visited);
-    }
+
+    dump_grid(WIDTH, HEIGHT, cell);
 }
 
