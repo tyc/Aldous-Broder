@@ -25,7 +25,7 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
 	
 	let ret_value:i32;
 	
-	ret_value = (x * width) + y;
+	ret_value = x + (y * width);
 
     // println!("calculated vector position = {}", ret_value);
 
@@ -73,8 +73,8 @@ fn dump_grid(width : i32, height : i32, cell : Vec<Cell>) {
 fn main() {
 
     // define some constants that determine the size of the grid
-    const WIDTH : i32 = 10;
-    const HEIGHT : i32 =10;
+    const WIDTH : i32 = 3;
+    const HEIGHT : i32 = 2;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
     
@@ -109,7 +109,7 @@ fn main() {
             1 => {
                 if y_pos < HEIGHT-1 {
                     y_pos += 1;    
-//                    println!("direction is North, position {} {}", x_pos, y_pos);
+                    println!("direction is North, position {} {}", x_pos, y_pos);
                 }
             },
 
@@ -117,7 +117,7 @@ fn main() {
             2 => {
                 if x_pos < WIDTH-1 {
                     x_pos += 1;    
- //                   println!("direction is East, position {} {}", x_pos, y_pos);
+                    println!("direction is East, position {} {}", x_pos, y_pos);
                 }
             },
 
@@ -125,7 +125,7 @@ fn main() {
             3 => {
                 if y_pos > 0 {
                     y_pos -= 1;    
-  //                  println!("direction is South, position {} {}", x_pos, y_pos);
+                    println!("direction is South, position {} {}", x_pos, y_pos);
                 }
             }
 
@@ -133,7 +133,7 @@ fn main() {
             4 => {
                 if x_pos > 0 {
                     x_pos -= 1;    
-   //                 println!("direction is West, position {} {}", x_pos, y_pos);
+                    println!("direction is West, position {} {}", x_pos, y_pos);
                 }
             }
 
