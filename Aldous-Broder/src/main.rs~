@@ -49,7 +49,7 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
 fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
 
     let mut x_pos : i32 = 0;
-    let mut y_pos : i32 = 0;
+    let mut y_pos : i32;
     let mut done : bool = false;
 
     while x_pos < width{
@@ -183,8 +183,8 @@ fn dump_cell(cell : &Vec<Cell>){
 fn main() {
 
     // define some constants that determine the size of the grid
-    const WIDTH : i32 = 4;
-    const HEIGHT : i32 = 4;
+    const WIDTH : i32 = 10; 
+    const HEIGHT : i32 = 10;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
     
@@ -245,13 +245,12 @@ fn main() {
 
                         vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
                         
-                        cell[vec_pos].carve &= SOUTH_CARVE;
-                        cell[vec_pos].current = true;
+                        cell[vec_pos].carve &= NORTH_CARVE;
+            
+                        cell_remaining -= 1;
                     }
 
-                    
-
-
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     println!("direction is North, position {} {}, vec {}", x_pos, y_pos, vec_pos);
                 }
                 else
@@ -280,17 +279,19 @@ fn main() {
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
                         
-                        cell[vec_pos].carve &= EAST_CARVE; 
+                        cell[vec_pos].carve &= WEST_CARVE; 
                         cell[vec_pos].visited = true;
 
                         vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
                         
-                        cell[vec_pos].carve &= WEST_CARVE;
-                        cell[vec_pos].current = true;
+                        cell[vec_pos].carve &= EAST_CARVE;
+            
+                        cell_remaining -= 1;
                     }
 
                     
 
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     println!("direction is East, position {} {}, vec {}", x_pos, y_pos, vec_pos);
                 }
                 else
@@ -318,17 +319,19 @@ fn main() {
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
                         
-                        cell[vec_pos].carve &= SOUTH_CARVE; 
+                        cell[vec_pos].carve &= NORTH_CARVE; 
                         cell[vec_pos].visited = true;
 
                         vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
                         
-                        cell[vec_pos].carve &= NORTH_CARVE;
-                        cell[vec_pos].current = true;
+                        cell[vec_pos].carve &= SOUTH_CARVE;
+            
+                        cell_remaining -= 1;
                     }
 
                     
 
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     println!("direction is South, position {} {}, vec {}", x_pos, y_pos, vec_pos);
                 }
                 else
@@ -357,18 +360,17 @@ fn main() {
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
                         
-                        cell[vec_pos].carve &= WEST_CARVE; 
+                        cell[vec_pos].carve &= EAST_CARVE; 
                         cell[vec_pos].visited = true;
 
                         vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
                         
-                        cell[vec_pos].carve &= EAST_CARVE;
-                        cell[vec_pos].current = true;
+                        cell[vec_pos].carve &= WEST_CARVE;
+            
+                        cell_remaining -= 1;
                     }
 
-                    
-
-
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     println!("direction is West, position {} {}, vec {}", x_pos, y_pos, vec_pos);
                 }
                 else
@@ -393,7 +395,7 @@ fn main() {
 	    
         
         dump_grid(WIDTH, HEIGHT, &cell);
-        // dump_cell(&cell);
     }
+    dump_cell(&cell);
 }
 
