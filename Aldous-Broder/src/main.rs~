@@ -9,6 +9,7 @@ use rand::Rng;
 // http://weblog.jamisbuck.org/2011/1/17/maze-generation-aldous-broder-algorithm
 //
 
+<<<<<<< HEAD
 // defines some const for wall identification
 const NORTH : u8 = (1<<3);
 const SOUTH : u8 = (1<<2);
@@ -25,6 +26,8 @@ const WEST_CARVE  : u8 = !WEST;
 //    visited: if visited is 0x01 otherwise it is 0x00.
 //    carve: a bitfield indicate which of its four walls is missing.
 //           
+=======
+>>>>>>> Revert "added the const for masking"
 struct Cell {
 	visited: u8,  	// 0x01 = visited
 	carve: u8,		// either North, South, East or West.
@@ -110,6 +113,10 @@ fn main() {
    
     cell[vec_pos].visited = 0x01;    
     
+<<<<<<< HEAD
+    dump_grid(WIDTH, HEIGHT, cell);
+=======
+>>>>>>> Revert "added the const for masking"
     
     while cell_remaining != 0 {
 
@@ -123,6 +130,7 @@ fn main() {
             // direction is NORTH
             1 => {
                 if y_pos < HEIGHT-1 {
+<<<<<<< HEAD
                     
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     cell[vec_pos].carve &= NORTH_CARVE;
@@ -133,6 +141,9 @@ fn main() {
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     cell[vec_pos].carve &= SOUTH_CARVE; 
 
+=======
+                    y_pos += 1;    
+>>>>>>> Revert "added the const for masking"
                     println!("direction is North, position {} {}", x_pos, y_pos);
                 }
             },
