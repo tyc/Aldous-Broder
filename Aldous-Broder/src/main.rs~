@@ -49,6 +49,8 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
 fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
 
     let mut x_pos : i32 = 0;
+    let mut y_pos : i32 = 0;
+    let mut done : bool = false;
 
     while x_pos < width{
         print!(" _");
@@ -56,9 +58,58 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
     }
     println!("");
 
+    
+
+    y_pos = height - 1;
+    while done != true {
+
+        print!("|");
+
+        for x_pos in 0..width {
+
+
+            let vec_pos = calculate_vector_position(x_pos, y_pos, width) as usize;
+
+            // check the south wall
+            if (cell[vec_pos].carve & SOUTH) != 0 {
+                print!("_");
+            }
+            else
+            {
+                print!(" ");
+            }
+
+            // check the east wall
+            if (cell[vec_pos].carve & EAST) != 0 {
+                print!("|");
+            }
+            else
+            {
+                print!(" ");
+            }
+        
+
+//            println!("{} {}", x_pos, y_pos);
+        }
+    
+        println!("");
+
+        if (x_pos == width) && (y_pos == 0)
+        {
+            done = true;
+        }
+        
+        if y_pos > 0 
+        {
+            y_pos -= 1;
+        }
+    }
+
+    /*
     for y_pos in 0..height {
         print!("|");
         for x_pos in 0..width {
+
             let vec_pos = calculate_vector_position(x_pos, y_pos, width) as usize;
 
             // check the south wall
@@ -81,6 +132,7 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
         }
         println!("");
     }
+    */
 }
 
 fn dump_cell(cell : &Vec<Cell>){
@@ -131,8 +183,8 @@ fn dump_cell(cell : &Vec<Cell>){
 fn main() {
 
     // define some constants that determine the size of the grid
-    const WIDTH : i32 = 3;
-    const HEIGHT : i32 = 3;
+    const WIDTH : i32 = 7;
+    const HEIGHT : i32 = 7;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
     
@@ -156,6 +208,8 @@ fn main() {
     dump_cell(&cell);
 
     while cell_remaining != 0 {
+
+        println!("***********************************");
 
         // get the next step to take.
         let direction_shuffle = rand::thread_rng().gen_range(1,5);
