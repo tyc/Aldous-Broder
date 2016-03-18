@@ -28,7 +28,6 @@ const WEST_CARVE  : u8 = !WEST;
 struct Cell {
 	visited: bool, 	// 0x01 = visited
 	carve: u8,		// either North, South, East or West.
-    current: bool,  // current cell
 }
 
 
@@ -135,6 +134,7 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
     */
 }
 
+/*
 fn dump_cell(cell : &Vec<Cell>){
 
     for idx in 0..cell.len() {
@@ -178,13 +178,14 @@ fn dump_cell(cell : &Vec<Cell>){
     }
 
 }
+*/
 
 
 fn main() {
 
     // define some constants that determine the size of the grid
-    const WIDTH : i32 = 10; 
-    const HEIGHT : i32 = 10;
+    const WIDTH : i32 = 20; 
+    const HEIGHT : i32 = 20;
 
 	const GRID_SIZE :usize = WIDTH as usize * HEIGHT as usize;
     
@@ -192,7 +193,7 @@ fn main() {
 
 	let mut vec_pos : usize;
 	
-	let mut cell = vec![Cell{visited:false, carve:(NORTH|SOUTH|EAST|WEST), current:false}; (GRID_SIZE)];
+	let mut cell = vec![Cell{visited:false, carve:(NORTH|SOUTH|EAST|WEST)}; (GRID_SIZE)];
 	
     // setup up the first cell via  random selection.
     //
@@ -205,11 +206,11 @@ fn main() {
     println!("starting position {} {}, vec {}", x_pos, y_pos, vec_pos);
     cell[vec_pos].visited = true;    
    
-    dump_cell(&cell);
+    // dump_cell(&cell);
 
     while cell_remaining != 0 {
 
-        println!("***********************************");
+        // println!("***********************************");
 
         // get the next step to take.
         let direction_shuffle = rand::thread_rng().gen_range(1,5);
@@ -249,13 +250,6 @@ fn main() {
             
                         cell_remaining -= 1;
                     }
-
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    println!("direction is North, position {} {}, vec {}", x_pos, y_pos, vec_pos);
-                }
-                else
-                {
-                    println!("direction is North, but hit a wall!");
                 }
             },
 
@@ -288,15 +282,6 @@ fn main() {
             
                         cell_remaining -= 1;
                     }
-
-                    
-
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    println!("direction is East, position {} {}, vec {}", x_pos, y_pos, vec_pos);
-                }
-                else
-                {
-                    println!("direction is East, but hit a wall!");
                 }
             },
 
@@ -328,15 +313,6 @@ fn main() {
             
                         cell_remaining -= 1;
                     }
-
-                    
-
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    println!("direction is South, position {} {}, vec {}", x_pos, y_pos, vec_pos);
-                }
-                else
-                {
-                    println!("direction is South, but hit a wall!");
                 }
             }
 
@@ -369,34 +345,18 @@ fn main() {
             
                         cell_remaining -= 1;
                     }
-
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    println!("direction is West, position {} {}, vec {}", x_pos, y_pos, vec_pos);
-                }
-                else
-                {
-                    println!("direction is West, but hit a wall!");
                 }
             }
 
             _ => { println!("strange direction {}", direction_shuffle) },
         }
 
-        vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-        
+        // vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+        // println!("direction is East, position {} {}, vec {}, cell remaining {}", x_pos, y_pos, vec_pos, cell_remaining);
 
-        if cell[vec_pos].visited != true {
-
-            cell[vec_pos].visited = true;
-            
-            cell_remaining -= 1;
-            println!("cell remaining = {}", cell_remaining);
-        }
-	    
-        
-        dump_grid(WIDTH, HEIGHT, &cell);
     }
 
+	dump_grid(WIDTH, HEIGHT, &cell);
     //dump_cell(&cell);
 }
 
