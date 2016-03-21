@@ -7,6 +7,3 @@ authors = ["tyc <tehn.yit.chin@gmail.com>"]
 rand="0.3.0"
 log = "0.3.5"
 
-[features]
-# no features by default
-debug = ["true"]
