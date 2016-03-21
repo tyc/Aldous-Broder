@@ -1,4 +1,5 @@
 extern crate rand;
+#[macro_use] extern crate log;
 
 use rand::Rng;
 
@@ -103,38 +104,9 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
             y_pos -= 1;
         }
     }
-
-    /*
-    for y_pos in 0..height {
-        print!("|");
-        for x_pos in 0..width {
-
-            let vec_pos = calculate_vector_position(x_pos, y_pos, width) as usize;
-
-            // check the south wall
-            if (cell[vec_pos].carve & SOUTH) != 0 {
-                print!("_");
-            }
-            else
-            {
-                print!(" ");
-            }
-
-            // check the east wall
-            if (cell[vec_pos].carve & EAST) != 0 {
-                print!("|");
-            }
-            else
-            {
-                print!(" ");
-            }
-        }
-        println!("");
-    }
-    */
 }
 
-/*
+#[cfg(debug="true")]
 fn dump_cell(cell : &Vec<Cell>){
 
     for idx in 0..cell.len() {
@@ -176,9 +148,8 @@ fn dump_cell(cell : &Vec<Cell>){
     
     
     }
-
 }
-*/
+
 
 
 fn main() {
@@ -206,15 +177,16 @@ fn main() {
     println!("starting position {} {}, vec {}", x_pos, y_pos, vec_pos);
     cell[vec_pos].visited = true;    
    
-    // dump_cell(&cell);
+    if cfg!(debug = "true") {
+    	dump_cell(&cell);
+    }
 
     while cell_remaining != 0 {
 
-        // println!("***********************************");
-
+        debug!("***********************************");
+		
         // get the next step to take.
         let direction_shuffle = rand::thread_rng().gen_range(1,5);
-
 
         let old_x_pos = x_pos;
         let old_y_pos = y_pos;
@@ -225,18 +197,6 @@ fn main() {
             1 => {
                 if y_pos < HEIGHT-1 {
                     
-/*
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= NORTH_CARVE;
-                    cell[vec_pos].current = false;
-                    
-                    y_pos += 1;    
-                    
-                    // carve the current cell
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= SOUTH_CARVE;
-                    cell[vec_pos].current = true;
-*/
                     y_pos += 1;    
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
@@ -256,19 +216,6 @@ fn main() {
             // direction is EAST
             2 => {
                 if x_pos < WIDTH-1 {
-
-/*
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= EAST_CARVE;
-                    cell[vec_pos].current = false;
-
-                    x_pos += 1;    
-
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= WEST_CARVE;
-                    cell[vec_pos].current = true;
-*/
-
                     x_pos += 1;    
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
@@ -288,18 +235,7 @@ fn main() {
             // direction is South
             3 => {
                 if y_pos > 0 {
-/*
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= SOUTH_CARVE;
-                    cell[vec_pos].current = false;
-
-                    y_pos -= 1;    
-                    
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &=NORTH_CARVE;
-                    cell[vec_pos].current = true;
-*/
-                    
+                   
                     y_pos -= 1;    
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
@@ -320,18 +256,6 @@ fn main() {
             4 => {
                 if x_pos > 0 {
                 	
-/*
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= WEST_CARVE;
-                    cell[vec_pos].current = false;
-
-                    x_pos -= 1;    
-
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
-                    cell[vec_pos].carve &= EAST_CARVE;
-                    cell[vec_pos].current = true;
-*/
-
                     x_pos -= 1;    
                     vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
                     if cell[vec_pos].visited != true {
