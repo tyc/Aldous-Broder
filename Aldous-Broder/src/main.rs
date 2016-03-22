@@ -46,7 +46,6 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->usize {
 	return ret_value as usize;
 }
 
-
 /// # dump_grid
 /// 
 /// This will dump the grid in a ASCII fashion out onto stdout.
@@ -167,7 +166,11 @@ fn dump_cell(cell : &Vec<Cell>){
 }
 
 
-
+// The main entry point.
+// To configure the size of the grid, change the value for const of
+// WIDTH and HEIGHT. The width and height does not have to be the same.
+//
+// todo: update the code so that it can take a command line option.
 fn main() {
 
     // define some constants that determine the size of the grid
@@ -197,7 +200,6 @@ fn main() {
   *  }
   */
 
-
     // iterate until all the cells have been visited.
     while cell_remaining != 0 {
 
@@ -216,6 +218,7 @@ fn main() {
         // the new cell and the old cell is carved.
         // The number of remaining cells are also reduced.
         //
+        // The code also checks for the limits fo the grid.
         match direction_shuffle {
 
             // direction is NORTH
@@ -305,6 +308,8 @@ fn main() {
 
     }
 
+	// The maze is completed, so lets dump it out into the
+	// stdout so that it can be enjoyed.
 	dump_grid(WIDTH, HEIGHT, &cell);
     //dump_cell(&cell);
 }
