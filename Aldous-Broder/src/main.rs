@@ -16,13 +16,13 @@ const SOUTH : u8 = (1<<2);
 const EAST  : u8 = (1<<1);
 const WEST  : u8 = (1<<0);
 
-
+/// The `Option` type. See [the module level documentation](index.html) for more.
 const NORTH_CARVE : u8 = !NORTH;
 const SOUTH_CARVE : u8 = !SOUTH;
 const EAST_CARVE  : u8 = !EAST;
 const WEST_CARVE  : u8 = !WEST;
 
-// This the cell structure block. Each cell has the following attributes
+// This the cell structure block. Each cell has thef following attributes
 //    visited: if visited is 0x01 otherwise it is 0x00.
 //    carve: a bitfield indicate which of its four walls is missing.
 //           
@@ -35,7 +35,7 @@ struct Cell {
 impl Copy for Cell {}
 impl Clone for Cell { fn clone(&self) -> Cell {*self}}
 
-fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
+fn calculate_vector_position(x :i32, y: i32, width : i32)->usize {
 	
 	let ret_value:i32;
 	
@@ -43,9 +43,20 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->i32 {
 
     // println!("calculated vector position = {}", ret_value);
 
-	return ret_value;
+	return ret_value as usize;
 }
 
+
+/// # dump_grid
+/// 
+/// This will dump the grid in a ASCII fashion out onto stdout.
+/// The algorithm will only check the carving on the EAST wall and
+/// the carving on the south wall. It uses the natural movement of
+/// the cursor from left to right, and then top to down.
+/// 
+/// Graphically, the bottom left hand corner of the finished 
+/// dumped grid has the coordinate (0,0).
+///
 fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
 
     let mut x_pos : i32 = 0;
@@ -58,8 +69,6 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
     }
     println!("");
 
-    
-
     y_pos = height - 1;
     while done != true {
 
@@ -68,7 +77,7 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
         for x_pos in 0..width {
 
 
-            let vec_pos = calculate_vector_position(x_pos, y_pos, width) as usize;
+            let vec_pos = calculate_vector_position(x_pos, y_pos, width);
 
             // check the south wall
             if (cell[vec_pos].carve & SOUTH) != 0 {
@@ -105,7 +114,14 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
         }
     }
 }
-
+/// dump out the contents of the grid cell.
+/// 
+/// # Examples
+/// 
+///   dump_cell(&cell);
+/// 
+/// the qwerty contents of cell will be dumped out to stdout.
+///
 #[cfg(debug="true")]
 fn dump_cell(cell : &Vec<Cell>){
 
@@ -167,20 +183,22 @@ fn main() {
 	let mut cell = vec![Cell{visited:false, carve:(NORTH|SOUTH|EAST|WEST)}; (GRID_SIZE)];
 	
     // setup up the first cell via  random selection.
-    //
     let mut x_pos = rand::thread_rng().gen_range(0,WIDTH-1);
     let mut y_pos = rand::thread_rng().gen_range(0,HEIGHT-1);
 
-
-	vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+	vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH);
    
-    println!("starting position {} {}, vec {}", x_pos, y_pos, vec_pos);
+    debug!("starting position {} {}, vec {}", x_pos, y_pos, vec_pos);
     cell[vec_pos].visited = true;    
-   
-    if cfg!(debug = "true") {
-    	dump_cell(&cell);
-    }
 
+ /*   
+  *  if cfg!(debug="true") {
+  *  	dump_cell(&cell);
+  *  }
+  */
+
+
+    // iterate until all the cells have been visited.
     while cell_remaining != 0 {
 
         debug!("***********************************");
@@ -191,6 +209,13 @@ fn main() {
         let old_x_pos = x_pos;
         let old_y_pos = y_pos;
 
+        // check if cell have been visited or not after taken the step.
+        // Mark it accordingly if has not been visited before.
+        //
+        // For the cells that has not been visited, the wall between 
+        // the new cell and the old cell is carved.
+        // The number of remaining cells are also reduced.
+        //
         match direction_shuffle {
 
             // direction is NORTH
@@ -198,13 +223,13 @@ fn main() {
                 if y_pos < HEIGHT-1 {
                     
                     y_pos += 1;    
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH);
                     if cell[vec_pos].visited != true {
                         
                         cell[vec_pos].carve &= SOUTH_CARVE; 
                         cell[vec_pos].visited = true;
 
-                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
+                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH);
                         
                         cell[vec_pos].carve &= NORTH_CARVE;
             
@@ -217,13 +242,13 @@ fn main() {
             2 => {
                 if x_pos < WIDTH-1 {
                     x_pos += 1;    
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH);
                     if cell[vec_pos].visited != true {
                         
                         cell[vec_pos].carve &= WEST_CARVE; 
                         cell[vec_pos].visited = true;
 
-                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
+                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH);
                         
                         cell[vec_pos].carve &= EAST_CARVE;
             
@@ -237,13 +262,13 @@ fn main() {
                 if y_pos > 0 {
                    
                     y_pos -= 1;    
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH);
                     if cell[vec_pos].visited != true {
                         
                         cell[vec_pos].carve &= NORTH_CARVE; 
                         cell[vec_pos].visited = true;
 
-                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
+                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH);
                         
                         cell[vec_pos].carve &= SOUTH_CARVE;
             
@@ -257,13 +282,13 @@ fn main() {
                 if x_pos > 0 {
                 	
                     x_pos -= 1;    
-                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH) as usize;
+                    vec_pos = calculate_vector_position(x_pos, y_pos, WIDTH);
                     if cell[vec_pos].visited != true {
                         
                         cell[vec_pos].carve &= EAST_CARVE; 
                         cell[vec_pos].visited = true;
 
-                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH) as usize;
+                        vec_pos = calculate_vector_position(old_x_pos, old_y_pos, WIDTH);
                         
                         cell[vec_pos].carve &= WEST_CARVE;
             
