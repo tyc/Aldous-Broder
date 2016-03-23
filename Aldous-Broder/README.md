@@ -29,18 +29,18 @@ This notes are relevant for the following versions.
 
 ## rustdoc ##
 
-rust has the ability to generate html documentation of the code but it's default configuration is only limited to public functions and modules. Not 100% sure of the rational behind this reasoning, but I would have thought that rustdocs should work on all levels. As it stands now, getting it generate documents for private code needs some extra flags.
+rust has the ability to generate html documentation of the code but it's default configuration is only limited to public functions and modules. Not 100% sure of the reasoning, but I would have thought that rustdocs should work on all levels. As it stands now, getting it generate documents for private code needs some extra flags.
 
 I have created a [batch file](https://github.com/tyc/Aldous-Broder/blob/master/Aldous-Broder/gen_doc.bat "https://github.com/tyc/Aldous-Broder/blob/master/Aldous-Broder/gen_doc.bat") to generate the documentations.
 
-It uses `cargo doc` to generate the public functions first, and the execute 
-`rustdoc` via `cargo` to generate the private functions and modules. This two steps creates a set of documentations that seems to be complete. Being html documentation, the links are useful for navigating through the code.
+It uses `cargo doc` to generate the public functions first, and then execute 
+`rustdoc` via `cargo` to generate the private functions and modules. These two steps creates a set of documentation that seems to be complete. Being html documentation, the links are useful for navigating through the code.
 
-## ownership and ownership ##
+## ownership and borrowing ##
 
 [https://doc.rust-lang.org/book/ownership.html](https://doc.rust-lang.org/book/ownership.html "https://doc.rust-lang.org/book/ownership.html")
 
-My development background is embedded systems and C is my language of choice. The concept of ownership and borrowing are not relevant in C unless it is explicitly in your design.
+My development background is from embedded systems and C is my language of choice. The concept of ownership and borrowing are not relevant in C unless it is explicitly in your design.
 
 I really like this idea as it forms the core aspect of safety. C, by default, does not promote C memory safety.
 
@@ -73,7 +73,7 @@ This reddit entry shows some insights, but still to be solved.
 [https://www.reddit.com/r/rust/comments/2nlyhl/conditional_compilation/ ](https://www.reddit.com/r/rust/comments/2nlyhl/conditional_compilation/ "https://www.reddit.com/r/rust/comments/2nlyhl/conditional_compilation/") 
 
 
-## coding style guide checkign during compile ##
+## coding style guide checking during compile ##
 
 The coding style guide is also checked when the code is being compiled. I am not 100% sure if this a good idea. However, it only checkes a small subset, more specifically the naming style of the symbols. 
 
