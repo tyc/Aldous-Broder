@@ -14,7 +14,7 @@ use rand::Rng;
 const NORTH : u8 = (1<<3);
 const SOUTH : u8 = (1<<2);
 const EAST  : u8 = (1<<1);
-const WEST  : u8 = (1<<0);
+const WEST  : u8 =  1;
 
 /// The `Option` type. See [the module level documentation](index.html) for more.
 const NORTH_CARVE : u8 = !NORTH;
@@ -25,25 +25,20 @@ const WEST_CARVE  : u8 = !WEST;
 // This the cell structure block. Each cell has thef following attributes
 //    visited: if visited is 0x01 otherwise it is 0x00.
 //    carve: a bitfield indicate which of its four walls is missing.
-//           
+//
+#[derive(Copy, Clone)]
 struct Cell {
 	visited: bool, 	// 0x01 = visited
 	carve: u8,		// either North, South, East or West.
 }
 
-
-impl Copy for Cell {}
-impl Clone for Cell { fn clone(&self) -> Cell {*self}}
-
-fn calculate_vector_position(x :i32, y: i32, width : i32)->usize {
-	
-	let ret_value:i32;
-	
+fn calculate_vector_position(x: i32, y: i32, width: i32) -> usize {
+	let ret_value : i32;
 	ret_value = x + (y * width);
 
     // println!("calculated vector position = {}", ret_value);
 
-	return ret_value as usize;
+	ret_value as usize
 }
 
 /// # dump_grid
@@ -56,7 +51,7 @@ fn calculate_vector_position(x :i32, y: i32, width : i32)->usize {
 /// Graphically, the bottom left hand corner of the finished 
 /// dumped grid has the coordinate (0,0).
 ///
-fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
+fn dump_grid(width : i32, height : i32, cell : &[Cell]) {
 
     let mut x_pos : i32 = 0;
     let mut y_pos : i32;
@@ -79,21 +74,21 @@ fn dump_grid(width : i32, height : i32, cell : &Vec<Cell>) {
             let vec_pos = calculate_vector_position(x_pos, y_pos, width);
 
             // check the south wall
-            if (cell[vec_pos].carve & SOUTH) != 0 {
-                print!("_");
+            if (cell[vec_pos].carve & SOUTH) == 0 {
+                print!(" ");
             }
             else
             {
-                print!(" ");
+                print!("_");
             }
 
             // check the east wall
-            if (cell[vec_pos].carve & EAST) != 0 {
-                print!("|");
+            if (cell[vec_pos].carve & EAST) == 0 {
+                print!(" ");
             }
             else
             {
-                print!(" ");
+                print!("|");
             }
         
 
@@ -160,7 +155,6 @@ fn dump_cell(cell : &Vec<Cell>){
         }
 
         println!("");
-    
     
     }
 }
